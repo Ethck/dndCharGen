@@ -24,7 +24,7 @@ def writePDF(inputPath, outputPath, dataDict):
 
 
 dataDict = {
-	'name': TBD,
+	'name': 'TBD',
 	'str': 10,
 	'dex': 10,
 	'con': 10,
@@ -39,5 +39,7 @@ dataDict = {
 	'chaMod': 0,
 	'class': [['Fighter', 1]],
 	'hp': 10,
+	'ac': 10,
+	'tempHp': 0
 }
 

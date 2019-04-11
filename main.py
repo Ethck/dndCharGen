@@ -2,104 +2,106 @@
 
 import os
 import pdfrw
+import PlayerCharacter as pc
 
 templatePath = 'template.pdf'
 
-annotKey = '/Annots'
-aFieldKey = '/T'
-subtypeKey = '/Subtype'
-wSubKey = '/Widget'
+annotMarker = '/Annots'
+fieldMarker = '/T'
+subMarker = '/Subtype'
+widgetMarker = '/Widget'
 
 def writePDF(inputPath, outputPath, dataDict):
 	templatePDF = pdfrw.PdfReader(inputPath)
-	annotations = templatePDF.pages[0][annotKey]
+	annotations = templatePDF.pages[0][annotMarker]
 	for annotation in annotations:
-		if annotation[subtypeKey] == wSubKey:
-			if annotation[aFieldKey]:
-				key = annotation[aFieldKey][1:-1]
+		if annotation[subMarker] == widgetMarker:
+			if annotation[fieldMarker]:
+				key = annotation[fieldMarker][1:-1]
 				if key in dataDict.keys():
 					annotation.update(pdfrw.PdfDict(V='{}'.format(dataDict[key])))
 
 	pdfrw.PdfWriter().write(outputPath, templatePDF)
 
+player = pc.PlayerCharacter()
 
-dataDict = {
-	'CharacterName': 'TBD',
-	'STR': 10,
-	'STRmod': 0,
-	'DEX': 10,
-	'DEXmod ': 0,
-	'CON': 10,
-	'CONmod': 0,
-	'INT': 10,
-	'INTmod': 0,
-	'WIS': 10,
-	'WISmod': 0,
-	'CHA': 10,
-	'CHamod': 0,
-	'ClassLevel': [['Fighter', 1], ['Wizard', 10]],
-	'Background': None,
-	'PlayerName': None,
-	'Race ': "Aasimar",
-	'Alignment': None,
-	'XP': 0,
-	'AC': 10,
-	'Initiative': 0,
-	'Speed': 30,
-	'HPMax': 10,
-	'HPCurrent': 10,
-	'HPTemp': 0,
-	'HDTotal': 1,
-	'HD': 1,
-	'PersonalityTraits ': "abc",
-	'Ideals': "a",
-	'Bonds': "a",
-	'Flaws': "a",
-	'Passive': 10, #Passive Perception
-	'ProficienciesLang': ["a"],
-	'Features and Traits': ["a"],
-	'Equipment': "Studded Leather Armor\n Shield\n",
-	'CP': 0,
-	'SP': 0,
-	'EP': 0,
-	'GP': 0,
-	'PP': 0,
-	'AttacksSpellcasting': "a",
-	'Wpn Name': "a",
-	'Wpn Name 2': "a",
-	'Wpn Name 3': "a",
-	'Wpn1 AtkBonus': 0,
-	'Wpn2 AtkBonus ': 0,
-	'Wpn3 AtkBonus  ': 0,
-	'Wpn1 Damage': "a",
-	'Wpn2 Damage ': "a",
-	'Wpn3 Damage ': "a",
-	'Inspiration': "0",
-	'ProfBonus': 2,
-	'ST Strength': 0,
-	'ST Dexterity': 0,
-	'ST Constitution': 0,
-	'ST Intelligence': 0,
-	'ST Wisdom': 0,
-	'ST Charisma': 0,
-	'Acrobatics': 0,
-	'Animal': 0,
-	'Arcana': 0,
-	'Athletics': 0,
-	'Deception ': 0,
-	'History ': 0,
-	'Insight': 0,
-	'Intimidation': 0,
-	'Investigation ': 0,
-	'Medicine': 0,
-	'Nature': 0,
-	'Perception ': 0,
-	'Performance': 0,
-	'Persuasion': 0,
-	'Religion': 0,
-	'SleightofHand': 0,
-	'Stealth ': 0,
-	'Survival': 0
+defaultData = {
+	'CharacterName': player.name,
+	'STR': player.str,
+	'STRmod': player.strmod,
+	'DEX': player.dex,
+	'DEXmod ': player.dexmod,
+	'CON': player.con,
+	'CONmod': player.conmod,
+	'INT': player.int,
+	'INTmod': player.intmod,
+	'WIS': player.wis,
+	'WISmod': player.wismod,
+	'CHA': player.cha,
+	'CHamod': player.chamod,
+	'ClassLevel': player.classes,
+	'Background': player.background,
+	'PlayerName': player.pname,
+	'Race ': player.race,
+	'Alignment': player.alignment,
+	'XP': player.xp,
+	'AC': player.ac,
+	'Initiative': player.init,
+	'Speed': player.speed,
+	'HPMax': player.hpmax,
+	'HPCurrent': player.hpcurrent,
+	'HPTemp': player.hptemp,
+	'HDTotal': player.hptotal,
+	'HD': player.hd,
+	'PersonalityTraits ': player.ptraits,
+	'Ideals': player.ideals,
+	'Bonds': player.bonds,
+	'Flaws': player.flaws,
+	'Passive': player.passivep, #Passive Perception
+	'ProficienciesLang': player.profs,
+	'Features and Traits': player.features,
+	'Equipment': player.equipment,
+	'CP': player.cp,
+	'SP': player.sp,
+	'EP': player.ep,
+	'GP': player.gp,
+	'PP': player.pp,
+	'AttacksSpellcasting': player.attacks,
+	'Wpn Name': player.wpn1,
+	'Wpn Name 2': player.wpn2,
+	'Wpn Name 3': player.wpn3,
+	'Wpn1 AtkBonus': player.wpn1atk,
+	'Wpn2 AtkBonus ': player.wpn2atk,
+	'Wpn3 AtkBonus  ': player.wpn3atk,
+	'Wpn1 Damage': player.wpn1dmg,
+	'Wpn2 Damage ': player.wpn2dmg,
+	'Wpn3 Damage ': player.wpn3dmg,
+	'Inspiration': player.inspir,
+	'ProfBonus': player.prof,
+	'ST Strength': player.ststr,
+	'ST Dexterity': player.stdex
+	'ST Constitution': player.stcon,
+	'ST Intelligence': player.stint,
+	'ST Wisdom': player.stwis,
+	'ST Charisma': player.stcha,
+	'Acrobatics': player.acro,
+	'Animal': player.animal,
+	'Arcana': player.aracna,
+	'Athletics': player.athletics,
+	'Deception ': player.deception,
+	'History ': player.history,
+	'Insight': player.insight,
+	'Intimidation': player.intimidation,
+	'Investigation ': player.investigation,
+	'Medicine': player.medicine,
+	'Nature': player.nature,
+	'Perception ': player.perception,
+	'Performance': player.performance,
+	'Persuasion': player.persuasion,
+	'Religion': player.religion,
+	'SleightofHand': player.sleight,
+	'Stealth ': player.stealth,
+	'Survival': player.survival
 }
 
-writePDF(templatePath, "test.pdf", dataDict)
+writePDF(templatePath, "test.pdf", defaultData)

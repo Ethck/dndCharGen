@@ -37,7 +37,7 @@ dataDict = {
 	'WISmod': 0,
 	'CHA': 10,
 	'CHamod': 0,
-	'ClassLevel': [['Fighter', 1]],
+	'ClassLevel': [['Fighter', 1], ['Wizard', 10]],
 	'Background': None,
 	'PlayerName': None,
 	'Race ': "Aasimar",

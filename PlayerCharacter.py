@@ -1,22 +1,32 @@
+import random
+
 class PlayerCharacter():
 	def __init__(self):
 		self.buildCharacter()
 		print("You have a character!")
 
+	def rollStat(self):
+		a = random.randint(2,6)
+		b = random.randint(2,6)
+		c = random.randint(2,6)
+		d = random.randint(2,6)
+
+		return a + b + c + d - min(a, b, c, d)
+
 	def buildCharacter(self):
-		self.name = "TBD"
-		self.pstr = 10
-		self.strmod = 0
-		self.dex = 10
-		self.dexmod = 0 
-		self.con = 10
-		self.conmod = 0
-		self.pint = 10
-		self.intmod = 0
-		self.wis = 10
-		self.wismod = 0
-		self.cha = 10
-		self.chamod = 0
+		self.name = input("Name?")
+		self.pstr = self.rollStat()
+		self.strmod = int((self.pstr - 10) / 2)
+		self.dex = self.rollStat()
+		self.dexmod = int((self.dex - 10) / 2)
+		self.con = self.rollStat()
+		self.conmod = int((self.con - 10) / 2)
+		self.pint = self.rollStat()
+		self.intmod = int((self.pint - 10) / 2)
+		self.wis = self.rollStat()
+		self.wismod = int((self.wis - 10) / 2)
+		self.cha = self.rollStat()
+		self.chamod = int((self.cha - 10) / 2)
 		self.classes = "Fighter 1"
 		self.background = "Merchant"
 		self.pname = "IDK"
@@ -35,7 +45,6 @@ class PlayerCharacter():
 		self.ideals = "a"
 		self.bonds = "a"
 		self.flaws = "a"
-		self.passivep = 0 #Passive Perception
 		self.profs = "a"
 		self.features = "a"
 		self.equipment = "a"
@@ -55,28 +64,29 @@ class PlayerCharacter():
 		self.wpn2dmg = 0
 		self.wpn3dmg = 0
 		self.inspir = 0
-		self.prof = 0
-		self.ststr = 0
-		self.stdex = 0
-		self.stcon = 0
-		self.stint = 0
-		self.stwis = 0
-		self.stcha = 0
-		self.acro = 0
-		self.animal = 0
-		self.aracna = 0
-		self.athletics = 0
-		self.deception = 0
-		self.history = 0
-		self.insight = 0
-		self.intimidation = 0
-		self.investigation = 0
-		self.medicine = 0
-		self.nature = 0
-		self.perception = 0
-		self.performance = 0
-		self.persuasion = 0
-		self.religion = 0
-		self.sleight = 0
-		self.stealth = 0
-		self.survival = 0
+		self.prof = 2
+		self.ststr = self.strmod
+		self.stdex = self.dexmod
+		self.stcon = self.conmod
+		self.stint = self.intmod
+		self.stwis = self.wismod
+		self.stcha = self.chamod
+		self.acro = self.dexmod
+		self.animal = self.wismod
+		self.aracna = self.intmod
+		self.athletics = self.strmod
+		self.deception = self.chamod
+		self.history = self.intmod
+		self.insight = self.wismod
+		self.intimidation = self.chamod
+		self.investigation = self.intmod
+		self.medicine = self.wismod
+		self.nature = self.intmod
+		self.perception = self.wismod
+		self.performance = self.chamod
+		self.persuasion = self.chamod
+		self.religion = self.intmod
+		self.sleight = self.dexmod
+		self.stealth = self.dexmod
+		self.survival = self.wismod
+		self.passivep = 10 + self.perception #Passive Perception

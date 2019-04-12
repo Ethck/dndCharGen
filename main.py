@@ -57,7 +57,6 @@ defaultData = {
 	'Ideals': player.ideals,
 	'Bonds': player.bonds,
 	'Flaws': player.flaws,
-	'Passive': player.passivep, #Passive Perception
 	'ProficienciesLang': player.profs,
 	'Features and Traits': player.features,
 	'Equipment': player.equipment,
@@ -101,7 +100,8 @@ defaultData = {
 	'Religion': player.religion,
 	'SleightofHand': player.sleight,
 	'Stealth ': player.stealth,
-	'Survival': player.survival
+	'Survival': player.survival,
+	'Passive': player.passivep #Passive Perception
 }
 
 writePDF(templatePath, "test.pdf", defaultData)

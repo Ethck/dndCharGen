@@ -27,13 +27,13 @@ player = pc.PlayerCharacter()
 
 defaultData = {
 	'CharacterName': player.name,
-	'STR': player.str,
+	'STR': player.pstr,
 	'STRmod': player.strmod,
 	'DEX': player.dex,
 	'DEXmod ': player.dexmod,
 	'CON': player.con,
 	'CONmod': player.conmod,
-	'INT': player.int,
+	'INT': player.pint,
 	'INTmod': player.intmod,
 	'WIS': player.wis,
 	'WISmod': player.wismod,
@@ -79,7 +79,7 @@ defaultData = {
 	'Inspiration': player.inspir,
 	'ProfBonus': player.prof,
 	'ST Strength': player.ststr,
-	'ST Dexterity': player.stdex
+	'ST Dexterity': player.stdex,
 	'ST Constitution': player.stcon,
 	'ST Intelligence': player.stint,
 	'ST Wisdom': player.stwis,

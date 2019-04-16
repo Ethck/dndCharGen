@@ -3,6 +3,7 @@
 import os
 import pdfrw
 import PlayerCharacter as pc
+import json
 
 templatePath = 'template.pdf'
 
@@ -83,7 +84,7 @@ defaultData = {
 	'ST Intelligence': player.stint,
 	'ST Wisdom': player.stwis,
 	'ST Charisma': player.stcha,
-	'Acrobatics': player.acro,
+	'Acrobatics': player.acrobatics,
 	'Animal': player.animal,
 	'Arcana': player.aracna,
 	'Athletics': player.athletics,

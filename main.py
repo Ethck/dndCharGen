@@ -4,6 +4,7 @@ import os
 import pdfrw
 import PlayerCharacter as pc
 import json
+import Item
 
 templatePath = 'template.pdf'
 
@@ -24,7 +25,21 @@ def writePDF(inputPath, outputPath, dataDict):
 
 	pdfrw.PdfWriter().write(outputPath, templatePDF)
 
+# Make a Character
 player = pc.PlayerCharacter()
+
+# Instantiate all items.
+items = []
+
+with open("items.json") as j:
+	ItemsList = json.load(j)['basicitem']
+
+for item in ItemsList:
+	w = Item.Item(item)
+	items.append(w)
+
+#print(items)
+player.cleanEquipment(items)
 
 defaultData = {
 	'CharacterName': player.name,

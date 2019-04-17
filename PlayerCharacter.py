@@ -6,7 +6,6 @@ class PlayerCharacter():
 		self.loadOptions()
 		self.buildCharacter()
 		self.handleProfs()
-		self.cleanEquipment()
 		print("You have a character!")
 
 	def loadOptions(self):
@@ -71,16 +70,68 @@ class PlayerCharacter():
 			else:
 				print("Unknown proficiency")
 
-	def cleanEquipment(self):
+	def cleanEquipment(self, itemList):
 		a = self.b['startingEquipment']['default']
+		k = []
 		for choice in a:
-			print(choice)
+			s = None
+			j = []
 			i = choice.split("{@")
-			print(i)
+			for line in i:
+				if 'item' or 'filter' in line:
+					c = line.split("|")
+					if (len(c) > 1):
+						s = c[0].replace('item ', '').replace('filter ', '')
 
+				for item in itemList:
+					if item.name.lower() == s:
+						j.append(item)
+					elif s == "martial melee weapon":
+						j.append("Martial")
+						break
+					elif s == "simple weapon":
+						j.append("Simple")
+						break
+
+			k.append(j)
+		print(k)
+
+		for b in k:
+			if (len(b) > 1):
+				u = input(f"Do you want (a) a(n) {b[0].name} or (b) a {b[1]}?")
+				if u == 'a':
+					print(f"we have {b[0].name}")
+					if self.wpn1 == "":
+						self.wpn1 = b[0].name
+						if 'F' not in b[0].property:
+							self.wpn1atk = self.strmod + self.prof
+							self.wpn1dmg = b[0].dmg1 + str(self.strmod)
+						else:
+							self.wpn1atk = self.dexmod + self.prof
+							self.wpn1dmg = b[0].dmg1 + self.dexmod
+					elif self.wpn2 == "":
+						self.wpn2 = b[0].name
+						if 'F' not in b[0].property:
+							self.wpn2atk = self.strmod + self.prof
+							self.wpn2dmg = b[0].dmg1 + str(self.strmod)
+						else:
+							self.wpn2atk = self.dexmod + self.prof
+							self.wpn2dmg = b[0].dmg1 + self.dexmod
+					elif self.wpn3 == "":
+						self.wpn3 = b[0].name
+						if 'F' not in b[0].property:
+							self.wpn3atk = self.strmod + self.prof
+							self.wpn3dmg = b[0].dmg1 + self.strmod
+						else:
+							self.wpn3atk = self.dexmod + self.prof
+							self.wpn3dmg = b[0].dmg1 + self.dexmod
+
+				elif u == 'b':
+					print(f"we have {b[1].name}")
 
 	def buildCharacter(self):
-		self.name = input("Name?\n")
+		#self.name = input("Name?\n")
+		self.name = "Orog"
 		self.pstr = self.rollStat()
 		self.strmod = int((self.pstr - 10) / 2)
 		self.dex = self.rollStat()
@@ -93,10 +144,12 @@ class PlayerCharacter():
 		self.wismod = int((self.wis - 10) / 2)
 		self.cha = self.rollStat()
 		self.chamod = int((self.cha - 10) / 2)
-		self.level = int(input("What level character?\n"))
+		#self.level = int(input("What level character?\n"))
+		self.level = 4
 		self.classes = self.b['name'] + " " + str(self.level)
 		self.background = "Merchant"
-		self.pname = input("Player Name?\n")
+		#self.pname = input("Player Name?\n")
+		self.pname = "IDK"
 		self.race = "Human"
 		self.alignment = "CN"
 		self.xp = 0
@@ -122,9 +175,9 @@ class PlayerCharacter():
 		self.pp = 0
 		self.prof = -(-self.level // 4) + 1
 		self.attacks = ""
-		self.wpn1 = "Longsword"
-		self.wpn2 = 0
-		self.wpn3 = 0
+		self.wpn1 = ""
+		self.wpn2 = ""
+		self.wpn3 = ""
 		self.wpn1atk = self.strmod + self.prof
 		self.wpn2atk = 0
 		self.wpn3atk = 0

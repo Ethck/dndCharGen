@@ -31,44 +31,10 @@ class PlayerCharacter():
 			i -= 1
 			c = int(input("Index?\n"))
 
-			if j[c] == "Acrobatics":
-				self.acrobatics += self.prof
-			elif j[c] == "Animal Handling":
-				self.animal += self.prof
-			elif j[c] == "Arcana":
-				self.arcana += self.prof
-			elif j[c] == "Athletics":
-				self.athletics += self.prof
-			elif j[c] == "Deception":
-				self.deception += self.prof
-			elif j[c] == "History":
-				self.history += self.prof
-			elif j[c] == "Insight":
-				self.insight += self.prof
-			elif j[c] == "Intimidation":
-				self.intimidation += self.prof
-			elif j[c] == "Investigation":
-				self.investigation += self.prof
-			elif j[c] == "Medicine":
-				self.medicine += self.prof
-			elif j[c] == "Nature":
-				self.nature += self.prof
-			elif j[c] == "Perception":
-				self.perception += self.prof
-			elif j[c] == "Performance":
-				self.performance += self.prof
-			elif j[c] == "Persuasion":
-				self.persuasion += self.prof
-			elif j[c] == "Religion":
-				self.religion += self.prof
-			elif j[c] == "Sleight of Hand":
-				self.sleight += self.prof
-			elif j[c] == "Stealth":
-				self.stealth += self.prof
-			elif j[c] == "Survival":
-				self.survival += self.prof
-			else:
-				print("Unknown proficiency")
+			if len(j[c].lower().split(" ")) > 1:
+				self.skillProfs[j[c].lower().split(" ")[0]] += self.prof
+			elif j[c].lower() in self.skillProfs:
+				self.skillProfs[j[c].lower()] += self.prof
 
 	def cleanEquipment(self, itemList):
 		a = self.b['startingEquipment']['default']
@@ -94,40 +60,55 @@ class PlayerCharacter():
 						break
 
 			k.append(j)
-		print(k)
+		self.chooseEquipment(k, itemList)
 
+	def chooseEquipment(self, k, itemList):
 		for b in k:
 			if (len(b) > 1):
-				u = input(f"Do you want (a) a(n) {b[0].name} or (b) a {b[1]}?")
+				u = input(f"Do you want (a) a(n) {b[0]} or (b) a {b[1]}?")
 				if u == 'a':
-					print(f"we have {b[0].name}")
-					if self.wpn1 == "":
-						self.wpn1 = b[0].name
-						if 'F' not in b[0].property:
-							self.wpn1atk = self.strmod + self.prof
-							self.wpn1dmg = b[0].dmg1 + str(self.strmod)
-						else:
-							self.wpn1atk = self.dexmod + self.prof
-							self.wpn1dmg = b[0].dmg1 + self.dexmod
-					elif self.wpn2 == "":
-						self.wpn2 = b[0].name
-						if 'F' not in b[0].property:
-							self.wpn2atk = self.strmod + self.prof
-							self.wpn2dmg = b[0].dmg1 + str(self.strmod)
-						else:
-							self.wpn2atk = self.dexmod + self.prof
-							self.wpn2dmg = b[0].dmg1 + self.dexmod
-					elif self.wpn3 == "":
-						self.wpn3 = b[0].name
-						if 'F' not in b[0].property:
-							self.wpn3atk = self.strmod + self.prof
-							self.wpn3dmg = b[0].dmg1 + self.strmod
-						else:
-							self.wpn3atk = self.dexmod + self.prof
-							self.wpn3dmg = b[0].dmg1 + self.dexmod
-
+					self.assignEquipment(b[0])
 				elif u == 'b':
-					print(f"we have {b[1].name}")
+					weapons = []
+					for item in itemList:
+						if hasattr(item, 'weaponCategory'):
+							if b[1] == "Martial" and item.weaponCategory == "Martial":
+								weapons.append(item)
+							elif b[1] == "Simple" and item.weaponCategory == "Simple":
+								weapons.append(item)
+
+					print(f"Choose a weapon by index. [1 - {len(weapons) - 1}]\n" + ', '.join(str(weapon) for weapon in weapons))
+					c = int(input("Index?"))
+					print(f"Choosing {weapons[c]}")
+					self.assignEquipment(weapons[c])
+
+
+	def assignEquipment(self, weapon):
+		if self.wpn1 == "":
+			self.wpn1 = weapon.name
+			if 'F' not in weapon.property and 'R' not in weapon.property:
+				self.wpn1atk = self.strmod + self.prof
+				self.wpn1dmg = weapon.dmg1 + " + " + str(self.strmod)
+			else:
+				self.wpn1atk = self.dexmod + self.prof
+				self.wpn1dmg = weapon.dmg1 + " + " + str(self.dexmod)
+		elif self.wpn2 == "":
+			self.wpn2 = weapon.name
+			if 'F' not in weapon.property and 'R' not in weapon.property:
+				self.wpn2atk = self.strmod + self.prof
+				self.wpn2dmg = weapon.dmg1 + " + " + str(self.strmod)
+			else:
+				self.wpn2atk = self.dexmod + self.prof
+				self.wpn2dmg = weapon.dmg1 + " + " + str(self.dexmod)
+		elif self.wpn3 == "":
+			self.wpn3 = weapon.name
+			if 'F' not in weapon.property and 'R' not in weapon.property:
+				self.wpn3atk = self.strmod + self.prof
+				self.wpn3dmg = weapon.dmg1 + " + " + str(self.strmod)
+			else:
+				self.wpn3atk = self.dexmod + self.prof
+				self.wpn3dmg = weapon.dmg1 + " + " + str(self.dexmod)
+
 
 	def buildCharacter(self):
 		#self.name = input("Name?\n")
@@ -178,12 +159,12 @@ class PlayerCharacter():
 		self.wpn1 = ""
 		self.wpn2 = ""
 		self.wpn3 = ""
-		self.wpn1atk = self.strmod + self.prof
-		self.wpn2atk = 0
-		self.wpn3atk = 0
-		self.wpn1dmg = self.strmod
-		self.wpn2dmg = 0
-		self.wpn3dmg = 0
+		self.wpn1atk = ""
+		self.wpn2atk = ""
+		self.wpn3atk = ""
+		self.wpn1dmg = ""
+		self.wpn2dmg = ""
+		self.wpn3dmg = ""
 		self.inspir = 0
 		self.ststr = self.strmod
 		self.stdex = self.dexmod
@@ -191,22 +172,24 @@ class PlayerCharacter():
 		self.stint = self.intmod
 		self.stwis = self.wismod
 		self.stcha = self.chamod
-		self.acrobatics = self.dexmod
-		self.animal = self.wismod
-		self.aracna = self.intmod
-		self.athletics = self.strmod
-		self.deception = self.chamod
-		self.history = self.intmod
-		self.insight = self.wismod
-		self.intimidation = self.chamod
-		self.investigation = self.intmod
-		self.medicine = self.wismod
-		self.nature = self.intmod
-		self.perception = self.wismod
-		self.performance = self.chamod
-		self.persuasion = self.chamod
-		self.religion = self.intmod
-		self.sleight = self.dexmod
-		self.stealth = self.dexmod
-		self.survival = self.wismod
-		self.passivep = 10 + self.perception #Passive Perception
+		self.skillProfs = {
+			'acrobatics': self.dexmod,
+			'animal': self.wismod,
+			'aracna': self.intmod,
+			'athletics': self.strmod,
+			'deception': self.chamod,
+			'history': self.intmod,
+			'insight': self.wismod,
+			'intimidation': self.chamod,
+			'investigation': self.intmod,
+			'medicine': self.wismod,
+			'nature': self.intmod,
+			'perception': self.wismod,
+			'performance': self.chamod,
+			'persuasion': self.chamod,
+			'religion': self.intmod,
+			'sleight': self.dexmod,
+			'stealth': self.dexmod,
+			'survival': self.wismod
+		}
+		self.passivep = 10 + self.skillProfs['perception'] #Passive Perception

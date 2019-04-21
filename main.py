@@ -4,7 +4,7 @@ import os
 import pdfrw
 import PlayerCharacter as pc
 import json
-import Item
+import register
 
 templatePath = 'template.pdf'
 
@@ -27,19 +27,7 @@ def writePDF(inputPath, outputPath, dataDict):
 
 # Make a Character
 player = pc.PlayerCharacter()
-
-# Instantiate all items.
-items = []
-
-with open("items.json") as j:
-	ItemsList = json.load(j)['basicitem']
-
-for item in ItemsList:
-	w = Item.Item(item)
-	items.append(w)
-
-#print(items)
-player.cleanEquipment(items)
+register.registerOptions(player)
 
 defaultData = {
 	'CharacterName': player.name,
@@ -99,24 +87,24 @@ defaultData = {
 	'ST Intelligence': player.stint,
 	'ST Wisdom': player.stwis,
 	'ST Charisma': player.stcha,
-	'Acrobatics': player.skillProfs['acrobatics'],
-	'Animal': player.skillProfs['animal'],
-	'Arcana': player.skillProfs['aracna'],
-	'Athletics': player.skillProfs['athletics'],
-	'Deception ': player.skillProfs['deception'],
-	'History ': player.skillProfs['history'],
-	'Insight': player.skillProfs['insight'],
-	'Intimidation': player.skillProfs['intimidation'],
-	'Investigation ': player.skillProfs['investigation'],
-	'Medicine': player.skillProfs['medicine'],
-	'Nature': player.skillProfs['nature'],
-	'Perception ': player.skillProfs['perception'],
-	'Performance': player.skillProfs['performance'],
-	'Persuasion': player.skillProfs['persuasion'],
-	'Religion': player.skillProfs['religion'],
-	'SleightofHand': player.skillProfs['sleight'],
-	'Stealth ': player.skillProfs['stealth'],
-	'Survival': player.skillProfs['survival'],
+	'Acrobatics': player.skillProfs['acrobatics'][1],
+	'Animal': player.skillProfs['animal'][1],
+	'Arcana': player.skillProfs['aracna'][1],
+	'Athletics': player.skillProfs['athletics'][1],
+	'Deception ': player.skillProfs['deception'][1],
+	'History ': player.skillProfs['history'][1],
+	'Insight': player.skillProfs['insight'][1],
+	'Intimidation': player.skillProfs['intimidation'][1],
+	'Investigation ': player.skillProfs['investigation'][1],
+	'Medicine': player.skillProfs['medicine'][1],
+	'Nature': player.skillProfs['nature'][1],
+	'Perception ': player.skillProfs['perception'][1],
+	'Performance': player.skillProfs['performance'][1],
+	'Persuasion': player.skillProfs['persuasion'][1],
+	'Religion': player.skillProfs['religion'][1],
+	'SleightofHand': player.skillProfs['sleight'][1],
+	'Stealth ': player.skillProfs['stealth'][1],
+	'Survival': player.skillProfs['survival'][1],
 	'Passive': player.passivep #Passive Perception
 }
 

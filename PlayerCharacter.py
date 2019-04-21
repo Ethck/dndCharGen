@@ -9,7 +9,7 @@ class PlayerCharacter():
 		print("You have a character!")
 
 	def loadOptions(self):
-		with open("barbarian.json") as file:
+		with open("data/classes/barbarian.json") as file:
 			a = json.load(file)
 			# name, source, hd, proficiency, classTableGroups, startingProficiencies, startingEquipment,
 			# multiclassing, classFeatures, subclassTitle, subclasses, fluff
@@ -26,15 +26,23 @@ class PlayerCharacter():
 	def handleProfs(self):
 		i = int(self.b['startingProficiencies']['skills']['choose'])
 		j = self.b['startingProficiencies']['skills']['from']
+		prevChoices = []
 		while i > 0:
 			print(f"Choose a prof by index." + ', '.join(self.b['startingProficiencies']['skills']['from']))
 			i -= 1
 			c = int(input("Index?\n"))
+			if c >= 0 and c <= len(j) - 1 and c not in prevChoices:
+				if len(j[c].lower().split(" ")) > 1:
+					self.skillProfs[j[c].lower().split(" ")[0]][0] == True
+					self.skillProfs[j[c].lower().split(" ")[0]][1] += self.prof
+				elif j[c].lower() in self.skillProfs:
+					self.skillProfs[j[c].lower()][0] == True
+					self.skillProfs[j[c].lower()][1] += self.prof
 
-			if len(j[c].lower().split(" ")) > 1:
-				self.skillProfs[j[c].lower().split(" ")[0]] += self.prof
-			elif j[c].lower() in self.skillProfs:
-				self.skillProfs[j[c].lower()] += self.prof
+				prevChoices.append(c)
+			else:
+				print("Please select a different index.")
+				i += 1
 
 	def cleanEquipment(self, itemList):
 		a = self.b['startingEquipment']['default']
@@ -77,7 +85,7 @@ class PlayerCharacter():
 							elif b[1] == "Simple" and item.weaponCategory == "Simple":
 								weapons.append(item)
 
-					print(f"Choose a weapon by index. [1 - {len(weapons) - 1}]\n" + ', '.join(str(weapon) for weapon in weapons))
+					print(f"Choose a weapon by index. [0 - {len(weapons) - 1}]\n" + ', '.join(str(weapon) for weapon in weapons))
 					c = int(input("Index?"))
 					print(f"Choosing {weapons[c]}")
 					self.assignEquipment(weapons[c])
@@ -130,7 +138,7 @@ class PlayerCharacter():
 		self.classes = self.b['name'] + " " + str(self.level)
 		self.background = "Merchant"
 		#self.pname = input("Player Name?\n")
-		self.pname = "IDK"
+		self.pname = "Ethck"
 		self.race = "Human"
 		self.alignment = "CN"
 		self.xp = 0
@@ -142,10 +150,10 @@ class PlayerCharacter():
 		self.hpcurrent = self.hpmax
 		self.hptemp = 0
 		self.hptotal = self.level
-		self.ptraits = "a" 
-		self.ideals = "a"
-		self.bonds = "a"
-		self.flaws = "a"
+		self.ptraits = "a" #derived from background 
+		self.ideals = "a" #derived from background
+		self.bonds = "a" #derived from background
+		self.flaws = "a" #derived from background
 		self.profs = "=Armor=\n" + ', '.join(self.b['startingProficiencies']['armor']) + "\n=Weapons=\n" + ', '.join(self.b['startingProficiencies']['weapons'])
 		self.features = "a"
 		self.equipment = ', '.join(self.b['startingEquipment']['default'])
@@ -173,23 +181,23 @@ class PlayerCharacter():
 		self.stwis = self.wismod
 		self.stcha = self.chamod
 		self.skillProfs = {
-			'acrobatics': self.dexmod,
-			'animal': self.wismod,
-			'aracna': self.intmod,
-			'athletics': self.strmod,
-			'deception': self.chamod,
-			'history': self.intmod,
-			'insight': self.wismod,
-			'intimidation': self.chamod,
-			'investigation': self.intmod,
-			'medicine': self.wismod,
-			'nature': self.intmod,
-			'perception': self.wismod,
-			'performance': self.chamod,
-			'persuasion': self.chamod,
-			'religion': self.intmod,
-			'sleight': self.dexmod,
-			'stealth': self.dexmod,
-			'survival': self.wismod
+			'acrobatics': [False, self.dexmod],
+			'animal': [False, self.wismod],
+			'aracna': [False, self.intmod],
+			'athletics': [False, self.strmod],
+			'deception': [False, self.chamod],
+			'history': [False, self.intmod],
+			'insight': [False, self.wismod],
+			'intimidation': [False, self.chamod],
+			'investigation': [False, self.intmod],
+			'medicine': [False, self.wismod],
+			'nature': [False, self.intmod],
+			'perception': [False, self.wismod],
+			'performance': [False, self.chamod],
+			'persuasion': [False, self.chamod],
+			'religion': [False, self.intmod],
+			'sleight': [False, self.dexmod],
+			'stealth': [False, self.dexmod],
+			'survival': [False, self.wismod]
 		}
-		self.passivep = 10 + self.skillProfs['perception'] #Passive Perception
+		self.passivep = 10 + self.skillProfs['perception'][1] #Passive Perception

@@ -9,9 +9,14 @@ class Item():
 
 	def buildItems(self, item):
 		self.name = item['name']
-		self.type = item['type']
+		if ('type' in item.keys()):
+			self.type = item['type']
+
 		self.source = item['source']
-		self.page = item['page']
+
+		if ('page' in item.keys()):
+			self.page = item['page']
+
 		if ('weapon' in item.keys()):
 			# Weapon
 			self.weapon = True

@@ -144,10 +144,6 @@ def chooseEquipment(k, itemList, player):
 						elif b[1] == "Simple" and item.weaponCategory == "Simple":
 							weapons.append(item)
 
-				#print(f"Choose a weapon by index. [0 - {len(weapons) - 1}]\n" + ', '.join(str(weapon) for weapon in weapons))
-				#c = int(input("Index?"))
-				#print(f"Choosing {weapons[c]}")
-				#assignEquipment(weapons[c], player)
 				c = provideChoice(weapons, None, "Weapon", True)
 				assignEquipment(c, player)
 
@@ -180,6 +176,8 @@ def assignEquipment(weapon, player):
 
 def registerOptions(player):
 	items = buildJsonList("data/items.json", 'basicitem', Item.Item)
+	items2 = buildJsonList("data/items2.json", 'item', Item.Item)
+	items = [*items, *items2]
 
 	playerClasses = []
 	for i in glob('data/classes/*.json'):
@@ -190,6 +188,9 @@ def registerOptions(player):
 
 	playerClass = provideChoice(playerClasses, None, "Class", True)
 	player.b = playerClass.json
+
+	player.buildCharacter()
+	player.handleProfs()
 	equipFromClass(playerClass, items, player)
 
 	bkgList = buildJsonList("data/backgrounds.json", 'background', Background)

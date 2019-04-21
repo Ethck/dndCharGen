@@ -2,18 +2,6 @@ import random
 import json
 
 class PlayerCharacter():
-	def __init__(self):
-		self.loadOptions()
-		self.buildCharacter()
-		self.handleProfs()
-		print("You have a character!")
-
-	def loadOptions(self):
-		with open("data/classes/barbarian.json") as file:
-			a = json.load(file)
-			# name, source, hd, proficiency, classTableGroups, startingProficiencies, startingEquipment,
-			# multiclassing, classFeatures, subclassTitle, subclasses, fluff
-			self.b = a['class'][0]
 
 	def rollStat(self):
 		a = random.randint(2,6)
@@ -43,79 +31,6 @@ class PlayerCharacter():
 			else:
 				print("Please select a different index.")
 				i += 1
-
-	def cleanEquipment(self, itemList):
-		a = self.b['startingEquipment']['default']
-		k = []
-		for choice in a:
-			s = None
-			j = []
-			i = choice.split("{@")
-			for line in i:
-				if 'item' or 'filter' in line:
-					c = line.split("|")
-					if (len(c) > 1):
-						s = c[0].replace('item ', '').replace('filter ', '')
-
-				for item in itemList:
-					if item.name.lower() == s:
-						j.append(item)
-					elif s == "martial melee weapon":
-						j.append("Martial")
-						break
-					elif s == "simple weapon":
-						j.append("Simple")
-						break
-
-			k.append(j)
-		self.chooseEquipment(k, itemList)
-
-	def chooseEquipment(self, k, itemList):
-		for b in k:
-			if (len(b) > 1):
-				u = input(f"Do you want (a) a(n) {b[0]} or (b) a {b[1]}?")
-				if u == 'a':
-					self.assignEquipment(b[0])
-				elif u == 'b':
-					weapons = []
-					for item in itemList:
-						if hasattr(item, 'weaponCategory'):
-							if b[1] == "Martial" and item.weaponCategory == "Martial":
-								weapons.append(item)
-							elif b[1] == "Simple" and item.weaponCategory == "Simple":
-								weapons.append(item)
-
-					print(f"Choose a weapon by index. [0 - {len(weapons) - 1}]\n" + ', '.join(str(weapon) for weapon in weapons))
-					c = int(input("Index?"))
-					print(f"Choosing {weapons[c]}")
-					self.assignEquipment(weapons[c])
-
-
-	def assignEquipment(self, weapon):
-		if self.wpn1 == "":
-			self.wpn1 = weapon.name
-			if 'F' not in weapon.property and 'R' not in weapon.property:
-				self.wpn1atk = self.strmod + self.prof
-				self.wpn1dmg = weapon.dmg1 + " + " + str(self.strmod)
-			else:
-				self.wpn1atk = self.dexmod + self.prof
-				self.wpn1dmg = weapon.dmg1 + " + " + str(self.dexmod)
-		elif self.wpn2 == "":
-			self.wpn2 = weapon.name
-			if 'F' not in weapon.property and 'R' not in weapon.property:
-				self.wpn2atk = self.strmod + self.prof
-				self.wpn2dmg = weapon.dmg1 + " + " + str(self.strmod)
-			else:
-				self.wpn2atk = self.dexmod + self.prof
-				self.wpn2dmg = weapon.dmg1 + " + " + str(self.dexmod)
-		elif self.wpn3 == "":
-			self.wpn3 = weapon.name
-			if 'F' not in weapon.property and 'R' not in weapon.property:
-				self.wpn3atk = self.strmod + self.prof
-				self.wpn3dmg = weapon.dmg1 + " + " + str(self.strmod)
-			else:
-				self.wpn3atk = self.dexmod + self.prof
-				self.wpn3dmg = weapon.dmg1 + " + " + str(self.dexmod)
 
 
 	def buildCharacter(self):
@@ -154,7 +69,10 @@ class PlayerCharacter():
 		self.ideals = "a" #derived from background
 		self.bonds = "a" #derived from background
 		self.flaws = "a" #derived from background
-		self.profs = "=Armor=\n" + ', '.join(self.b['startingProficiencies']['armor']) + "\n=Weapons=\n" + ', '.join(self.b['startingProficiencies']['weapons'])
+		if ('armor' not in self.b['startingProficiencies'].keys()):
+			self.profs = "=Weapons=\n" + ", ".join(self.b['startingProficiencies']['weapons'])
+		else:
+			self.profs = "=Armor=\n" + ', '.join(self.b['startingProficiencies']['armor']) + "\n=Weapons=\n" + ', '.join(self.b['startingProficiencies']['weapons'])
 		self.features = "a"
 		self.equipment = ', '.join(self.b['startingEquipment']['default'])
 		self.cp = 0

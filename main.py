@@ -63,7 +63,7 @@ defaultData = {
 	'Flaws': player.flaws,
 	'ProficienciesLang': player.profs,
 	'Features and Traits': player.features,
-	'Equipment': player.equipment,
+	'Equipment': "\n".join(player.equipment),
 	'CP': player.cp,
 	'SP': player.sp,
 	'EP': player.ep,

@@ -107,51 +107,66 @@ def equipFromClass(playerClass, itemList, player):
 	a = classOptions['startingEquipment']['default']
 	k = []
 	for choice in a:
-		s = None
-		j = []
+		ret = []
 		i = choice.split("{@")
+		lines = []
 		for line in i:
 			if 'item' or 'filter' in line:
 				c = line.split("|")
 				if (len(c) > 1):
 					s = c[0].replace('item ', '').replace('filter ', '')
+					lines.append(s)
 
+		print(*lines)
+		for j in lines:
 			for item in itemList:
-				if item.name.lower() == s:
-					j.append(item)
-				elif s == "martial melee weapon":
-					j.append("Martial")
+				if item.name.lower() == j:
+					ret.append(item)
 					break
-				elif s == "simple weapon":
-					j.append("Simple")
+				elif "martial" in j:
+					ret.append("Martial")
+					break
+				elif "simple" in j:
+					ret.append("Simple")
 					break
 
-		k.append(j)
+		print(ret)
+		k.append(ret)
 	chooseEquipment(k, itemList, player)
 
 def chooseEquipment(k, itemList, player):
+	# b is num Options
 	for b in k:
 		if (len(b) > 1):
 			u = input(f"Do you want (a) a(n) {b[0]} or (b) a {b[1]}?")
-			if u == 'a':
-				assignEquipment(b[0], player)
-			elif u == 'b':
-				weapons = []
-				for item in itemList:
-					if hasattr(item, 'weaponCategory'):
-						if b[1] == "Martial" and item.weaponCategory == "Martial":
-							weapons.append(item)
-						elif b[1] == "Simple" and item.weaponCategory == "Simple":
-							weapons.append(item)
+			i = 0
+			if u == 'b':
+				i += 1
+			# It's a weapon
+			if hasattr(b[i], 'weaponCategory'):
+				assignEquipment(b[i], player)
+			# Generic item OR weaponlist
+			else:
+				if b[i] == 'Martial' or b[i] == 'Simple':
+					weapons = []
+					for item in itemList:
+						if (hasattr(item, 'weaponCategory')):
+							if b[i] == "Martial" and item.weaponCategory == "Martial":
+								weapons.append(item)
+							elif b[i] == "Simple" and item.weaponCategory == "Simple":
+								weapons.append(item)
 
-				c = provideChoice(weapons, None, "Weapon", True)
-				assignEquipment(c, player)
+					c = provideChoice(weapons, None, "Weapon", True)
+					assignEquipment(c, player)
+				else:
+					player.equipment.append(b[i].name)
+			i = 0
 
 
 def assignEquipment(weapon, player):
 	if player.wpn1 == "":
 		player.wpn1 = weapon.name
-		if 'F' not in weapon.property and 'R' not in weapon.property:
+		if 'F' not in weapon.property:
 			player.wpn1atk = player.strmod + player.prof
 			player.wpn1dmg = weapon.dmg1 + " + " + str(player.strmod)
 		else:
@@ -159,7 +174,7 @@ def assignEquipment(weapon, player):
 			player.wpn1dmg = weapon.dmg1 + " + " + str(player.dexmod)
 	elif player.wpn2 == "":
 		player.wpn2 = weapon.name
-		if 'F' not in weapon.property and 'R' not in weapon.property:
+		if 'F' not in weapon.property:
 			player.wpn2atk = player.strmod + player.prof
 			player.wpn2dmg = weapon.dmg1 + " + " + str(player.strmod)
 		else:
@@ -167,7 +182,7 @@ def assignEquipment(weapon, player):
 			player.wpn2dmg = weapon.dmg1 + " + " + str(player.dexmod)
 	elif player.wpn3 == "":
 		player.wpn3 = weapon.name
-		if 'F' not in weapon.property and 'R' not in weapon.property:
+		if 'F' not in weapon.property:
 			player.wpn3atk = player.strmod + player.prof
 			player.wpn3dmg = weapon.dmg1 + " + " + str(player.strmod)
 		else:

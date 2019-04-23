@@ -3,14 +3,6 @@ import json
 
 class PlayerCharacter():
 
-	def rollStat(self):
-		a = random.randint(2,6)
-		b = random.randint(2,6)
-		c = random.randint(2,6)
-		d = random.randint(2,6)
-
-		return a + b + c + d - min(a, b, c, d)
-
 	def handleProfs(self):
 		i = int(self.b['startingProficiencies']['skills']['choose'])
 		j = self.b['startingProficiencies']['skills']['from']
@@ -36,17 +28,17 @@ class PlayerCharacter():
 	def buildCharacter(self):
 		#self.name = input("Name?\n")
 		self.name = "Orog"
-		self.pstr = self.rollStat()
+		self.pstr = rollStat()
 		self.strmod = int((self.pstr - 10) / 2)
-		self.dex = self.rollStat()
+		self.dex = rollStat()
 		self.dexmod = int((self.dex - 10) / 2)
-		self.con = self.rollStat()
+		self.con = rollStat()
 		self.conmod = int((self.con - 10) / 2)
-		self.pint = self.rollStat()
+		self.pint = rollStat()
 		self.intmod = int((self.pint - 10) / 2)
-		self.wis = self.rollStat()
+		self.wis = rollStat()
 		self.wismod = int((self.wis - 10) / 2)
-		self.cha = self.rollStat()
+		self.cha = rollStat()
 		self.chamod = int((self.cha - 10) / 2)
 		#self.level = int(input("What level character?\n"))
 		self.level = 4
@@ -74,7 +66,7 @@ class PlayerCharacter():
 		else:
 			self.profs = "=Armor=\n" + ', '.join(self.b['startingProficiencies']['armor']) + "\n=Weapons=\n" + ', '.join(self.b['startingProficiencies']['weapons'])
 		self.features = "a"
-		self.equipment = ', '.join(self.b['startingEquipment']['default'])
+		self.equipment = []
 		self.cp = 0
 		self.sp = 0
 		self.ep = 0
@@ -119,3 +111,11 @@ class PlayerCharacter():
 			'survival': [False, self.wismod]
 		}
 		self.passivep = 10 + self.skillProfs['perception'][1] #Passive Perception
+
+def rollStat():
+	a = random.randint(2,6)
+	b = random.randint(2,6)
+	c = random.randint(2,6)
+	d = random.randint(2,6)
+
+	return a + b + c + d - min(a, b, c, d)

@@ -1,6 +1,6 @@
 class Item():
-	def __init__(self, items):
-		self.buildItems(items)
+	def __init__(self, item):
+		self.buildItems(item)
 
 	def __str__(self):
 		return self.name

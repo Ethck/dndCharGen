@@ -3,28 +3,6 @@ import json
 
 class PlayerCharacter():
 
-	def handleProfs(self):
-		i = int(self.b['startingProficiencies']['skills']['choose'])
-		j = self.b['startingProficiencies']['skills']['from']
-		prevChoices = []
-		while i > 0:
-			print(f"Choose a prof by index." + ', '.join(self.b['startingProficiencies']['skills']['from']))
-			i -= 1
-			c = int(input("Index?\n"))
-			if c >= 0 and c <= len(j) - 1 and c not in prevChoices:
-				if len(j[c].lower().split(" ")) > 1:
-					self.skillProfs[j[c].lower().split(" ")[0]][0] == True
-					self.skillProfs[j[c].lower().split(" ")[0]][1] += self.prof
-				elif j[c].lower() in self.skillProfs:
-					self.skillProfs[j[c].lower()][0] == True
-					self.skillProfs[j[c].lower()][1] += self.prof
-
-				prevChoices.append(c)
-			else:
-				print("Please select a different index.")
-				i += 1
-
-
 	def buildCharacter(self):
 		#self.name = input("Name?\n")
 		self.name = "Orog"

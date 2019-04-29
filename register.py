@@ -196,8 +196,9 @@ def getClassAbilities(player):
 							subclasses.append(playerSubClass(sub))
 						c = provideChoice(subclasses, None, "Subclass", True)
 						player.subClass = c
-						for d in player.subClass.json:
-							print(d['subclassFeatures'])#['entries']['name'])
+						#print(player.subClass.json)
+						#for d in player.subClass.json['subclassFeatures']:
+							#print(d[0]['name'])#['entries']['name'])
 
 				elif a['name'] == "Ability Score Improvement":
 					print(f"ASI earned at level {i + 1}")

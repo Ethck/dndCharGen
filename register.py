@@ -2,6 +2,8 @@ import random
 import json
 from glob import glob
 import Item
+import re
+
 
 class Background():
 	def __init__(self, bkg):
@@ -38,6 +40,7 @@ class PlayerClass():
 		self.name = classJSON['name']
 		self.json = classJSON
 						
+
 def backgroundFeatures(background, list, key, player):
 	c = None
 	while True:
@@ -60,6 +63,7 @@ def backgroundFeatures(background, list, key, player):
 			continue
 
 	print(background.fluff[key])
+
 
 def makeBKGFeatures(player):
 	background = player.background
@@ -86,6 +90,7 @@ def makeBKGFeatures(player):
 					player.flaws = background.fluff['flaw']
 					player.background = background.name
 
+
 def provideChoice(list, action, name, ret = False):
 	for i, choice in enumerate(list):
 		print(f"{i}: {str(choice)}")
@@ -101,6 +106,7 @@ def provideChoice(list, action, name, ret = False):
 			break
 		else:
 			continue
+
 
 def buildJsonList(file, fileIndex, listAction):
 	resultList = []
@@ -142,6 +148,7 @@ def equipFromClass(playerClass, itemList, player):
 		#print([r.name for r in ret])
 		k.append(ret)
 	chooseEquipment(k, itemList, player)
+
 
 def chooseEquipment(k, itemList, player):
 	# b is num Options
@@ -185,31 +192,51 @@ def getClassAbilities(player):
 	json = player.b['classFeatures']
 	features = []
 	subFeatures = []
+	player.subClassLevels = []
+	player.subClassFeatures = []
+
 	for i, feature in enumerate(json):
 		if i <= player.level -1:
 			for a in feature:
 				if i == 0 or i == 2:
 					#CHOOSE A SUBCLASS
 					if 'gainSubclassFeature' in a.keys() and not hasattr(player, 'subClass'):
+						print(f"Subclass gained at level {i + 1}")
 						subclasses = []
 						for sub in player.b['subclasses']:
 							subclasses.append(playerSubClass(sub))
 						c = provideChoice(subclasses, None, "Subclass", True)
 						player.subClass = c
-						#print(player.subClass.json)
-						#for d in player.subClass.json['subclassFeatures']:
-							#print(d[0]['name'])#['entries']['name'])
 
+						for d in player.subClass.json['subclassFeatures']:
+							if isinstance(d[0]['entries'][0], dict):
+								subFeatures.append(d[0]['entries'][0])
+								result = re.search('[aA]t(.*)level', d[0]['entries'][0]['entries'][0])
+								if result != None:
+									result = result.group(1).split("level")[0]
+									player.subClassLevels.append(result)
+					elif 'gainSubclassFeature' in a.keys():
+						print(f"Subclass ability earned at level {i + 1}")
+						for i, level in enumerate(player.subClassLevels):
+							if 'r' in level:
+								a = level.split('r')[0]
+							elif 't' in level:
+								a = level.split('t')[0]
+
+							if int(a) <= player.level:
+								player.subClassFeatures.append(subFeatures[i])
 				elif a['name'] == "Ability Score Improvement":
 					print(f"ASI earned at level {i + 1}")
-					continue
 				elif 'gainSubclassFeature' in a.keys():
 					print(f"Subclass ability earned at level {i + 1}")
 				else:
 					fstring = str(f"{a['name']}")
 					features.append(fstring)
 
-	player.features = '\n'.join(features)
+	player.features = "Class features\n" + "-" * 10 + "\n"
+	player.features += '\n'.join(features)
+	player.features += '\nSubclass Features\n' + "-" * 10 + "\n"
+	player.features += '\n'.join([feature['name'] for feature in player.subClassFeatures])
 
 
 def assignEquipment(weapon, player):
@@ -239,6 +266,7 @@ def assignEquipment(weapon, player):
 			player.wpn3atk = player.dexmod + player.prof
 			player.wpn3dmg = weapon.dmg1 + " + " + str(player.dexmod)
 
+
 def handleProfs(player):
 	i = int(player.b['startingProficiencies']['skills']['choose'])
 	j = player.b['startingProficiencies']['skills']['from']
@@ -252,16 +280,27 @@ def handleProfs(player):
 		c = int(input("Index?\n"))
 		if c >= 0 and c <= len(j) - 1 and c not in prevChoices:
 			if len(j[c].lower().split(" ")) > 1:
-				player.skillProfs[j[c].lower().split(" ")[0]][0] == True
-				player.skillProfs[j[c].lower().split(" ")[0]][1] += player.prof
+				a = player.skillProfs[j[c].lower().split(" ")[0]]
+				if not a[0]:
+					a[0] == True
+					a[1] += player.prof
+				else:
+					print(f"You are already proficient in this already")
+					i += 1
 			elif j[c].lower() in player.skillProfs:
-				player.skillProfs[j[c].lower()][0] == True
-				player.skillProfs[j[c].lower()][1] += player.prof
+				a = player.skillProfs[j[c].lower()]
+				if not a[0]:
+					a[0] == True
+					a[1] += player.prof
+				else:
+					print(f"You are already proficient in this already")
+					i += 1
 
 			prevChoices.append(c)
 		else:
 			print("Please select a different index.")
 			i += 1
+
 
 def registerOptions(player):
 	items = buildJsonList("data/items.json", 'basicitem', Item.Item)

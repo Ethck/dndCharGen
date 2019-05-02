@@ -4,8 +4,8 @@ import json
 class PlayerCharacter():
 
 	def buildCharacter(self):
-		#self.name = input("Name?\n")
-		self.name = "Orog"
+		self.name = input("Name?\n")
+		#self.name = "Orog"
 		self.pstr = rollStat()
 		self.strmod = int((self.pstr - 10) / 2)
 		self.dex = rollStat()
@@ -18,11 +18,11 @@ class PlayerCharacter():
 		self.wismod = int((self.wis - 10) / 2)
 		self.cha = rollStat()
 		self.chamod = int((self.cha - 10) / 2)
-		#self.level = int(input("What level character?\n"))
-		self.level = 4
+		self.level = int(input("What level character?\n"))
+		#self.level = 4
 		self.classes = self.b['name'] + " " + str(self.level)
 		self.background = "Merchant"
-		#self.pname = input("Player Name?\n")
+		self.pname = input("Player Name?\n")
 		self.pname = "Ethck"
 		self.race = "Human"
 		self.alignment = "CN"

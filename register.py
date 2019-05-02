@@ -156,11 +156,29 @@ def chooseEquipment(k, itemList, player):
 		if (len(b) > 1):
 			i = 0
 			if len(b) == 2:
-				u = input(f"Do you want (a) a(n) {b[0]} or (b) a {b[1]}?")
+				u = input(f"Do you want (a) a(n) {b[0]} or (b) a {b[1]}? ")
 			elif len(b) == 3:
-				u = input(f"Do you want (a) a(n) {b[0]} and a(n) {b[1]} or (b) a {b[2]}?")
+				u = input(f"Do you want (a) a(n) {b[0]} and a(n) {b[1]} or (b) a {b[2]}? ")
 			if u == 'a':
-				player.equipment.append(b[1].name)
+				if isinstance(b[0], str) or (isinstance(b[1], str) and len(b) == 3):
+					#It's a choice weapon
+					print(b)
+					if isinstance(b[0], str):
+						w = b[0]
+					else:
+						w = b[1]
+					weapons = []
+					for item in itemList:
+						if (hasattr(item, 'weaponCategory')):
+							if w == "Martial" and item.weaponCategory == "Martial":
+								weapons.append(item)
+							elif w == "Simple" and item.weaponCategory == "Simple":
+								weapons.append(item)
+
+					c = provideChoice(weapons, None, "Weapon", True)
+					assignEquipment(c, player)
+				else:
+					player.equipment.append(b[0].name)
 
 				# It's a weapon
 				if hasattr(b[i], 'weaponCategory'):

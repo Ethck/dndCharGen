@@ -6,13 +6,18 @@ import re
 
 
 class Background():
+	"""Stores info about the various backgrounds for reference"""
+
 	def __init__(self, bkg):
+		"""Start the process through building the object."""
 		self.buildBackground(bkg)
 
 	def __str__(self):
+		"""If we call str() on the function, return it's name."""
 		return self.name
 
 	def buildBackground(self, bkg):
+		"""Set up the initial variables."""
 		self.bkg = bkg
 		self.name = bkg['name']
 		self.skillProfs = bkg['skillProficiencies']
@@ -21,27 +26,43 @@ class Background():
 
 
 class playerSubClass():
+	"""Store info about subclasses for reference"""
+
 	def __init__(self, subJSON):
+		"""Make some vars for reference"""
 		self.name = subJSON['name']
 		self.json = subJSON
 
 	def __str__(self):
+		"""Return the name when str() is used"""
 		return self.name
 
 
 class PlayerClass():
+	"""Store info about all classes for reference"""
+
 	def __init__(self, classJSON):
+		"""Call the starting function"""
 		self.buildClass(classJSON)
 
 	def __str__(self):
+		"""Return the name when str() is used"""
 		return self.name
 
 	def buildClass(self, classJSON):
+		"""Set up some vars for reference"""
 		self.name = classJSON['name']
 		self.json = classJSON
 						
 
 def backgroundFeatures(background, list, key, player):
+	"""Choose and assign features for chosen background.
+
+	:param background: A Background() that is the chosen background
+	:param list: list of possible options the key can assume
+	:param key: Name for an option (pTraits, Ideals, Bonds, Flaws)
+	:param player: A Player() instance to affect
+	"""
 	c = None
 	while True:
 		c = input(f"{key}: (a) choice or (b) random?")
@@ -66,6 +87,10 @@ def backgroundFeatures(background, list, key, player):
 
 
 def makeBKGFeatures(player):
+	"""Find and provide lists of all possible options
+
+	:param player: Instance of player() to affect
+	"""
 	background = player.background
 	if background.name not in background.bannedBackgrounds:
 		if background.source != "SCAG":
@@ -73,25 +98,36 @@ def makeBKGFeatures(player):
 			for i in range(len(background.bkg['entries'])):
 				if "name" in background.bkg['entries'][i]  and background.bkg['entries'][i]['name'] == "Suggested Characteristics":
 					background.suggestChars = background.bkg['entries'][i]
-					background.pTraits = background.suggestChars['entries'][1]['rows']
-					background.ideals = background.suggestChars['entries'][2]['rows']
-					background.bonds = background.suggestChars['entries'][3]['rows']
-					background.flaws = background.suggestChars['entries'][4]['rows']
-					background.fluff = {}
+					print(len(background.suggestChars['entries']))
+					if len(background.suggestChars['entries']) > 4:
+						background.pTraits = background.suggestChars['entries'][1]['rows']
+						background.ideals = background.suggestChars['entries'][2]['rows']
+						background.bonds = background.suggestChars['entries'][3]['rows']
+						background.flaws = background.suggestChars['entries'][4]['rows']
+						background.fluff = {}
 
-					backgroundFeatures(background, background.pTraits, "pTrait", player)
-					backgroundFeatures(background, background.ideals, "ideal", player)
-					backgroundFeatures(background, background.bonds, "bond", player)
-					backgroundFeatures(background, background.flaws, "flaw", player)
+						backgroundFeatures(background, background.pTraits, "pTrait", player)
+						backgroundFeatures(background, background.ideals, "ideal", player)
+						backgroundFeatures(background, background.bonds, "bond", player)
+						backgroundFeatures(background, background.flaws, "flaw", player)
 
-					player.ptraits = background.fluff['pTrait']
-					player.ideals = background.fluff['ideal']
-					player.bonds = background.fluff['bond']
-					player.flaws = background.fluff['flaw']
-					player.background = background.name
+						player.ptraits = background.fluff['pTrait']
+						player.ideals = background.fluff['ideal']
+						player.bonds = background.fluff['bond']
+						player.flaws = background.fluff['flaw']
+						player.background = background.name
+
 
 
 def provideChoice(list, action, name, ret = False):
+	"""Allow the user to choose options.
+
+	:param list: List of options for the user to choose from.
+	:param action: Function to run upon user choosing.
+	:param name: Printable name for what user is choosing.
+	:param ret: Boolean for whether or not to return a value.
+	:returns: User chosen value if ret = True
+	"""
 	for i, choice in enumerate(list):
 		print(f"{i}: {str(choice)}")
 
@@ -109,6 +145,13 @@ def provideChoice(list, action, name, ret = False):
 
 
 def buildJsonList(file, fileIndex, listAction):
+	"""Build list from JSON while using a wrapper function.
+
+	
+	:param file: Path to a JSON file
+	:param fileIndex: Key/indexing string for what is desired.
+	:param listAction: Wrapper function for the indexed data.
+	"""
 	resultList = []
 	with open(file) as f:
 		j = json.load(f)[fileIndex]
@@ -119,6 +162,12 @@ def buildJsonList(file, fileIndex, listAction):
 
 
 def equipFromClass(playerClass, itemList, player):
+	"""Grant the player equipment based on their class.
+
+	:param playerClass: The chosen class' JSON
+	:param itemList: list of all available items
+	:param player: instance of PlayerCharacter() class
+	"""
 	classOptions = playerClass.json
 	a = classOptions['startingEquipment']['default']
 	k = []
@@ -151,8 +200,14 @@ def equipFromClass(playerClass, itemList, player):
 
 
 def chooseEquipment(k, itemList, player):
-	# b is num Options
+	"""For all equipment in starting options, give a choice.
+
+	:param k: List of all possible choices
+	:param itemList: List of all possible items.
+	:param player: Instance of PlayerCharacter() class
+	"""
 	for b in k:
+		# b is num Options to choose from
 		if (len(b) > 1):
 			i = 0
 			if len(b) == 2:
@@ -207,6 +262,10 @@ def chooseEquipment(k, itemList, player):
 
 
 def getClassAbilities(player):
+	"""Get all abilities granted by reaching level X in class
+
+	:param player: Insance of PlayerCharacter() to affect
+	"""
 	json = player.b['classFeatures']
 	features = []
 	subFeatures = []
@@ -258,6 +317,11 @@ def getClassAbilities(player):
 
 
 def assignEquipment(weapon, player):
+	"""Given the chosen equipment, assign it to the character.
+
+	:param weapon: An Item() chosen by the player
+	:param player: Instance of PlayerCharacter() to affect
+	"""
 	if not hasattr(weapon, 'property'): weapon.property = 'None'
 	if player.wpn1 == "":
 		player.wpn1 = weapon.name
@@ -286,6 +350,10 @@ def assignEquipment(weapon, player):
 
 
 def handleProfs(player):
+	"""Given class, provide choice about proficiencies.
+
+	:param player: Instance of PlayerCharacter() to affect
+	"""
 	i = int(player.b['startingProficiencies']['skills']['choose'])
 	j = player.b['startingProficiencies']['skills']['from']
 	prevChoices = []
@@ -319,8 +387,30 @@ def handleProfs(player):
 			print("Please select a different index.")
 			i += 1
 
+def filterBKGList(bkgList):
+	"""Filter the list of Backgrounds to only include supported.
+
+	:param bkgList: List of all available Background()s
+	"""
+	newBKGList = []
+
+	for background in bkgList:
+		if background.name not in background.bannedBackgrounds:
+			if background.source != "SCAG":
+				#SCAG support requires all PHB backgrounds to be done first.
+				for i in range(len(background.bkg['entries'])):
+					if "name" in background.bkg['entries'][i]  and background.bkg['entries'][i]['name'] == "Suggested Characteristics":
+						background.suggestChars = background.bkg['entries'][i]
+						if len(background.suggestChars['entries']) > 4:
+							newBKGList.append(background)
+
+	return newBKGList
 
 def registerOptions(player):
+	"""Main method to "build" the player character.
+
+	:param player: Instance of PlayerCharacter() to affect
+	"""
 	items = buildJsonList("data/items.json", 'basicitem', Item.Item)
 	items2 = buildJsonList("data/items2.json", 'item', Item.Item)
 	items = [*items, *items2]
@@ -342,6 +432,8 @@ def registerOptions(player):
 	equipFromClass(playerClass, items, player)
 
 	bkgList = buildJsonList("data/backgrounds.json", 'background', Background)
+	bkgList = filterBKGList(bkgList)
 	player.background = provideChoice(bkgList, makeBKGFeatures, "Background", True)
 	makeBKGFeatures(player)
+	
 	getClassAbilities(player)

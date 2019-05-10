@@ -14,6 +14,12 @@ subMarker = '/Subtype'
 widgetMarker = '/Widget'
 
 def writePDF(inputPath, outputPath, dataDict):
+	"""Function to fill in the forms of a PDF with values from Dict.
+	
+	:param inputPath: Path of template PDF
+	:param outputPath: Path to make new PDF at
+	:param dataDict: Dictionary with keys with same name as form fields.
+	"""
 	templatePDF = pdfrw.PdfReader(inputPath)
 	annotations = templatePDF.pages[0][annotMarker]
 	for annotation in annotations:

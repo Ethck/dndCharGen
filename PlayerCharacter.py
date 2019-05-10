@@ -2,8 +2,10 @@ import random
 import json
 
 class PlayerCharacter():
+	"""Store all related information in a neat way."""
 
 	def buildCharacter(self):
+		"""Set up all the initial values"""
 		self.name = input("Name?\n")
 		#self.name = "Orog"
 		self.pstr = rollStat()
@@ -91,6 +93,7 @@ class PlayerCharacter():
 		self.passivep = 10 + self.skillProfs['perception'][1] #Passive Perception
 
 def rollStat():
+	"""Simple function to return a randomly rolled stat"""
 	a = random.randint(2,6)
 	b = random.randint(2,6)
 	c = random.randint(2,6)

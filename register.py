@@ -1,7 +1,6 @@
 import random
 import json
 from glob import glob
-import Item
 import re
 
 
@@ -24,6 +23,59 @@ class Background():
 		self.source = bkg['source']
 		self.bannedBackgrounds = ["Dissenter", "Inquisitor", "Variant Criminal (Spy)", "Variant Entertainer (Gladiator)", "Variant Guild Artisan (Guild Merchant)", "Variant Sailor (Pirate)"]
 
+
+class Item():
+	"""Container for all item characteristics"""
+
+	def __init__(self, item):
+		"""Call the build function.
+
+		:param item: The item JSON we are building.
+		"""
+		self.buildItems(item)
+
+	def __str__(self):
+		"""Return the name when str() is used"""
+		return self.name
+
+	def buildItems(self, item):
+		"""Determine the type of item, then add those properties.
+
+		:param item: Item JSON we are working on.
+		"""
+		self.name = item['name']
+		if ('type' in item.keys()):
+			self.type = item['type']
+
+		self.source = item['source']
+
+		if ('page' in item.keys()):
+			self.page = item['page']
+
+		if ('weapon' in item.keys()):
+			# Weapon
+			self.weapon = True
+			self.weaponCategory = item['weaponCategory']
+			if ('property' in item.keys()):
+				self.property = item['property']
+			if ('dmg1' in item.keys()):
+				self.dmg1 =  item['dmg1']
+				if len(self.dmg1) > 1:
+					self.dmg1 = self.dmg1.split(" ")[1].split("}")[0]
+			if ('dmg2' in item.keys()):
+				self.dmg2 =  item['dmg2']
+				if len(self.dmg2) > 1:
+					self.dmg2 = self.dmg2.split(" ")[1].split("}")[0]
+			if ('dmgType' in item.keys()):
+				self.dmgType = item['dmgType']
+
+		elif ('armor' in item.keys()):
+			# Armor
+			self.armor = True
+			self.ac = item['ac']
+
+		elif ('ammunition' in item.keys()):
+			self.ammunition = True
 
 class playerSubClass():
 	"""Store info about subclasses for reference"""
@@ -116,7 +168,6 @@ def makeBKGFeatures(player):
 						player.bonds = background.fluff['bond']
 						player.flaws = background.fluff['flaw']
 						player.background = background.name
-
 
 
 def provideChoice(list, action, name, ret = False):
@@ -387,6 +438,7 @@ def handleProfs(player):
 			print("Please select a different index.")
 			i += 1
 
+
 def filterBKGList(bkgList):
 	"""Filter the list of Backgrounds to only include supported.
 
@@ -406,13 +458,14 @@ def filterBKGList(bkgList):
 
 	return newBKGList
 
+
 def registerOptions(player):
 	"""Main method to "build" the player character.
 
 	:param player: Instance of PlayerCharacter() to affect
 	"""
-	items = buildJsonList("data/items.json", 'basicitem', Item.Item)
-	items2 = buildJsonList("data/items2.json", 'item', Item.Item)
+	items = buildJsonList("data/items.json", 'basicitem', Item)
+	items2 = buildJsonList("data/items2.json", 'item', Item)
 	items = [*items, *items2]
 
 	playerClasses = []
@@ -435,5 +488,5 @@ def registerOptions(player):
 	bkgList = filterBKGList(bkgList)
 	player.background = provideChoice(bkgList, makeBKGFeatures, "Background", True)
 	makeBKGFeatures(player)
-	
+
 	getClassAbilities(player)

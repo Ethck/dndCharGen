@@ -324,9 +324,10 @@ def getClassAbilities(player):
 	player.subClassFeatures = []
 
 	for i, feature in enumerate(json):
-		if i <= player.level -1:
+		print(feature)
+		if i <= player.level - 1:
 			for a in feature:
-				if i == 0 or i == 2:
+				if i == 0 or  i == 1 or i == 2:
 					#CHOOSE A SUBCLASS
 					if 'gainSubclassFeature' in a.keys() and not hasattr(player, 'subClass'):
 						print(f"Subclass gained at level {i + 1}")
@@ -357,6 +358,14 @@ def getClassAbilities(player):
 					print(f"ASI earned at level {i + 1}")
 				elif 'gainSubclassFeature' in a.keys():
 					print(f"Subclass ability earned at level {i + 1}")
+					for i, level in enumerate(player.subClassLevels):
+							if 'r' in level:
+								a = level.split('r')[0]
+							elif 't' in level:
+								a = level.split('t')[0]
+
+							if int(a) <= player.level:
+								player.subClassFeatures.append(subFeatures[i])
 				else:
 					fstring = str(f"{a['name']}")
 					features.append(fstring)

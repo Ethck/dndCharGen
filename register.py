@@ -2,6 +2,7 @@ import random
 import json
 from glob import glob
 import re
+from colorama import Fore, Style
 
 
 class Background():
@@ -23,21 +24,40 @@ class Background():
 		self.source = bkg['source']
 		self.bannedBackgrounds = ["Dissenter", "Inquisitor", "Variant Criminal (Spy)", "Variant Entertainer (Gladiator)", "Variant Guild Artisan (Guild Merchant)", "Variant Sailor (Pirate)"]
 
+
 class Race():
 	"""Container for Race statistics"""
 
-	def __init__(self, json):
+	def __init__(self, json, parent = None):
 		"""Set up init values"""
 		self.json = json
-		self.name = json['name']
+		self.name = json['name'].replace("(", "").replace(")", "")
 
-		if isinstance(json['speed'], dict):
-			self.speed = json['speed']['walk']
+
+		if parent != None:
+			self.parent = parent
+			self.speed = self.parent.speed
+			self.source = self.parent.source
+			self.pname = ' ->  ' + self.name + " | " + self.source
 		else:
-			self.speed = json['speed']
+			if isinstance(json['speed'], dict):
+				self.speed = json['speed']['walk']
+			else:
+				self.speed = json['speed']
 
-		self.source = json['source']
+			self.source = json['source']
+
+		self.name = self.name + " | " + self.source
 		self.abiInc = {}
+
+	def __lt__(self, other):
+		return self.name < other.name
+
+	def __eq__(self, other):
+		if other == None:
+			return False
+		else:
+			return self.name == other.name
 
 	def raceChosen(self, player):
 		"""Once given a chosen race, change the player to reflect it"""
@@ -67,32 +87,23 @@ class Race():
 
 			for abi in self.abiInc:
 				if "str" in abi:
-					print(f"OLD: {player.pstr}")
 					player.pstr += self.abiInc[abi]
-					print(f"NEW: {player.pstr}")
 				elif "dex" in abi:
-					print(f"OLD: {player.dex}")
 					player.dex += self.abiInc[abi]
-					print(f"NEW: {player.dex}")
 				elif "con" in abi:
-					print(f"OLD: {player.con}")
 					player.con += self.abiInc[abi]
-					print(f"NEW: {player.con}")
 				elif "int" in abi:
-					print(f"OLD: {player.pint}")
 					player.pint += self.abiInc[abi]
-					print(f"NEW: {player.pint}")
 				elif "wis" in abi:
-					print(f"OLD: {player.wis}")
 					player.wis += self.abiInc[abi]
-					print(f"NEW: {player.wis}")
 				elif "cha" in abi:
-					print(f"OLD: {player.cha}")
 					player.cha += self.abiInc[abi]
-					print(f"NEW: {player.cha}")
 
 	def __str__(self):
-		return self.name
+		if hasattr(self, "parent"):
+			return self.pname
+		else:
+			return self.name
 
 
 class Item():
@@ -147,6 +158,7 @@ class Item():
 
 		elif ('ammunition' in item.keys()):
 			self.ammunition = True
+
 
 class playerSubClass():
 	"""Store info about subclasses for reference"""
@@ -251,7 +263,7 @@ def provideChoice(list, action, name, ret = False):
 	:returns: User chosen value if ret = True
 	"""
 	for i, choice in enumerate(list):
-		print(f"{i}: {str(choice)}")
+		print(f"{Fore.BLUE}{i}:{Style.RESET_ALL} {Fore.GREEN}{str(choice)}{Style.RESET_ALL} ")
 
 	print(f"Choose a {name} by index.")
 	while True:
@@ -339,7 +351,6 @@ def chooseEquipment(k, itemList, player):
 			if u == 'a':
 				if isinstance(b[0], str) or (isinstance(b[1], str) and len(b) == 3):
 					#It's a choice weapon
-					print(b)
 					if isinstance(b[0], str):
 						w = b[0]
 					else:
@@ -401,9 +412,11 @@ def getClassAbilities(player):
 					#CHOOSE A SUBCLASS
 					if 'gainSubclassFeature' in a.keys() and not hasattr(player, 'subClass'):
 						print(f"Subclass gained at level {i + 1}")
+
 						subclasses = []
 						for sub in player.b['subclasses']:
 							subclasses.append(playerSubClass(sub))
+
 						c = provideChoice(subclasses, None, "Subclass", True)
 						player.subClass = c
 
@@ -414,6 +427,7 @@ def getClassAbilities(player):
 								if result != None:
 									result = result.group(1).split("level")[0]
 									player.subClassLevels.append(result)
+
 					elif 'gainSubclassFeature' in a.keys():
 						print(f"Subclass ability earned at level {i + 1}")
 						for i, level in enumerate(player.subClassLevels):
@@ -426,6 +440,7 @@ def getClassAbilities(player):
 								player.subClassFeatures.append(subFeatures[i])
 				elif a['name'] == "Ability Score Improvement":
 					print(f"ASI earned at level {i + 1}")
+					c = input(f"Take an (a) ASI or (b) a feat?")
 				elif 'gainSubclassFeature' in a.keys():
 					print(f"Subclass ability earned at level {i + 1}")
 					for i, level in enumerate(player.subClassLevels):
@@ -537,6 +552,35 @@ def filterBKGList(bkgList):
 
 	return newBKGList
 
+def addSubRaces(raceList):
+	""" Add the Sub Races from each race
+
+	:param raceList: List of Race(s) to add to.
+	"""
+	newRaces = raceList
+	for race in raceList:
+		if 'subraces' in race.json.keys():
+			for subRace in race.json['subraces']:
+				if len(subRace) != 0:
+					tSubRace = Race(subRace, race)
+					tSubRace.name = race.name + " - " + tSubRace.name + " (" + tSubRace.source + ")"
+					newRaces.append(tSubRace)
+
+	return newRaces
+
+def filterRaces(raceList):
+	""" Remove all non supported races.
+
+	:param raceList: List of Race(s) to filter
+	"""
+	trimRaces = []
+	for race in raceList:
+		# The in operator behaves off of __eq__
+		# __eq__ is overriden to test for names
+		if race not in trimRaces: 
+			trimRaces.append(race)
+	return trimRaces
+
 
 def registerOptions(player):
 	"""Main method to "build" the player character.
@@ -545,6 +589,9 @@ def registerOptions(player):
 	"""
 
 	races = buildJsonList("data/races.json", 'race', Race)
+	races = addSubRaces(races)
+	races = filterRaces(races)
+	races.sort()
 	playerRace = provideChoice(races, None, "Race", True)
 	items = buildJsonList("data/items.json", 'basicitem', Item)
 	items2 = buildJsonList("data/items2.json", 'item', Item)

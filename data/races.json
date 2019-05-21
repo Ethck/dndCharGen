@@ -2584,6 +2584,14 @@
 			"page": 29,
 			"size": "M",
 			"speed": 30,
+			"ability": {
+				"str": 1,
+				"dex": 1,
+				"con": 1,
+				"int": 1,
+				"wis": 1,
+				"cha": 1
+			},
 			"entries": [
 				{
 					"name": "Age",
@@ -2615,16 +2623,6 @@
 				}
 			],
 			"subraces": [
-				{
-					"ability": {
-						"str": 1,
-						"dex": 1,
-						"con": 1,
-						"int": 1,
-						"wis": 1,
-						"cha": 1
-					}
-				},
 				{
 					"name": "Variant",
 					"ability": {
@@ -3355,6 +3353,10 @@
 			"size": "M",
 			"speed": 30,
 			"darkvision": 60,
+			"ability": {
+				"cha": 2,
+				"int": 1
+			},
 			"entries": [
 				{
 					"name": "Age",
@@ -3397,27 +3399,16 @@
 						"You can speak, read, and write Common and Infernal."
 					],
 					"type": "entries"
+				},
+				{
+					"name": "Infernal Legacy",
+					"entries": [
+						"You know the {@spell thaumaturgy} cantrip. Once you reach 3rd level, you can cast the {@spell hellish rebuke} spell as a 2nd-level spell; you must finish a long rest in order to cast the spell again using this trait. Once you reach 5th level, you can also cast the {@spell darkness} spell; you must finish a long rest in order to cast the spell again using this trait. Charisma is your spellcasting ability for these spells."
+					],
+					"type": "entries"
 				}
 			],
 			"subraces": [
-				{
-					"ability": {
-						"cha": 2,
-						"int": 1
-					},
-					"entries": [
-						{
-							"name": "Infernal Legacy",
-							"entries": [
-								"You know the {@spell thaumaturgy} cantrip. Once you reach 3rd level, you can cast the {@spell hellish rebuke} spell as a 2nd-level spell; you must finish a long rest in order to cast the spell again using this trait. Once you reach 5th level, you can also cast the {@spell darkness} spell; you must finish a long rest in order to cast the spell again using this trait. Charisma is your spellcasting ability for these spells."
-							],
-							"type": "entries"
-						}
-					],
-					"traitTags": [
-						"Spellcasting"
-					]
-				},
 				{
 					"name": "Variant",
 					"source": "SCAG",
@@ -5871,61 +5862,6 @@
 					"type": "entries"
 				}
 			],
-			"subraces": [
-				{
-					"entries": [
-						{
-							"name": "Vedalken Cunning",
-							"entries": [
-								"You have advantage on all Intelligence, Wisdom, and Charisma saving throws against magic."
-							],
-							"type": "entries"
-						},
-						{
-							"name": "Aether Lore",
-							"entries": [
-								"Whenever you make an Intelligence ({@skill History}) check related to magic items or aether-powered technological devices, you can add twice your proficiency bonus, instead of any proficiency bonus you normally apply."
-							],
-							"type": "entries"
-						},
-						{
-							"name": "Languages",
-							"entries": [
-								"You can speak, read, and write Common and Vedalken. The Vedalken language is renowned for its technical treatises and its catalogs of knowledge about the natural world and the aether that pervades it."
-							],
-							"type": "entries",
-							"data": {
-								"overwrite": "Languages"
-							}
-						}
-					],
-					"languageTags": [
-						"Common",
-						"Other"
-					]
-				},
-				{
-					"source": "UARacesOfRavnica",
-					"page": 4,
-					"entries": [
-						{
-							"name": "Vedalken Dispassion",
-							"entries": [
-								"You have advantage on all Intelligence, Wisdom, and Charisma saving throws."
-							],
-							"type": "entries"
-						},
-						{
-							"name": "Tireless Precision",
-							"entries": [
-								"You are proficient in one of the following skills of your choice: {@skill Arcana}, {@skill History}, {@skill Investigation}, {@skill Medicine}, {@skill Performance}, or {@skill Sleight of Hand}. You are also proficient with one tool of your choice.",
-								"Whenever you make an ability check with the chosen skill or tool, roll a d4, and add the number rolled to the check's total."
-							],
-							"type": "entries"
-						}
-					]
-				}
-			],
 			"languageTags": [
 				"Common"
 			]
@@ -6316,6 +6252,7 @@
 					]
 				},
 				{
+					"name": "Normal",
 					"ability": {
 						"wis": 2
 					},
